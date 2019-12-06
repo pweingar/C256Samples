@@ -3,3 +3,6 @@ ImageViewer/imageview.lbl
 ImageViewer/imageview.lst
 ImageViewer/src/image.s
 ImageViewer/src/palette.s
+BouncingSprite/bounce.hex
+BouncingSprite/bounce.lbl
+BouncingSprite/bounce.lst

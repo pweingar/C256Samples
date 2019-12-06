@@ -8,6 +8,10 @@ Still, these may be useful as examples of how to get various things working on t
 
 ## Included Samples
 
+* BouncingSprite: Display a sprite on the screen and make it bounce around. This demo shows the
+    use of sprites, the MVN instruction, and how to use C256 interrupts to animate the sprite in
+    synch with the screen refresh to avoid "tearing".
+
 * ImageViewer: Display a picture on the bitmapped graphics screen. This project includes a simple
     Python script to convert a BMP file to assembly files that are included in an assembly program
     that copies the image and color palette to the graphics system.
