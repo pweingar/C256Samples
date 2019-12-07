@@ -6,3 +6,12 @@ ImageViewer/src/palette.s
 BouncingSprite/bounce.hex
 BouncingSprite/bounce.lbl
 BouncingSprite/bounce.lst
+Tiles/tiles.lst
+Tiles/tiles.hex
+Tiles/tiles.lbl
+BouncingSprite/src/rsrc/colors.s
+BouncingSprite/src/rsrc/pixmap.s
+ImageViewer/src/rsrc/colors.s
+ImageViewer/src/rsrc/pixmap.s
+Tiles/src/rsrc/pixmap.s
+Tiles/src/rsrc/colors.s

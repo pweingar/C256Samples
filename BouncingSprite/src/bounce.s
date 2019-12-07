@@ -81,7 +81,7 @@ START           CLC
                 LDA #IMG_END - IMG_START    ; Copy the sprite pixmap data to video RAM
                 LDX #<>IMG_START
                 LDY #<>VRAM
-                MVN `START,`VRAM
+                MVN `IMG_START,`VRAM
 
                 setdbr `START
                 setaxl
@@ -184,5 +184,5 @@ yield           PLD                         ; Restore DP and status
 ; Image data for the sprite
 ;
 
-.include "palette.s"
-.include "sprite.s"
+.include "rsrc/colors.s"
+.include "rsrc/pixmap.s"

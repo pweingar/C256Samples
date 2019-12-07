@@ -3,9 +3,17 @@
 #
 
 from PIL import Image
+from optparse import OptionParser
 
-with Image.open("Pepeshan.bmp") as im:
-    with open("src/palette.s", "w") as palette_file:
+parser = OptionParser()
+parser.add_option("-i", "--input", dest="input", help="Source image file")
+parser.add_option("-p", "--pixmap", dest="pixmap", default="src/rsrc/pixmap.s", help="Destination for pixel data.")
+parser.add_option("-c", "--color-table", dest="color_table", default="src/rsrc/colors.s", help="Destination for color data.")
+
+(options, args) = parser.parse_args()
+
+with Image.open(options.input) as im:
+    with open(options.color_table, "w") as palette_file:
         palette_file.write("LUT_START\n")
         palette = im.getpalette()
         while palette:
@@ -19,7 +27,7 @@ with Image.open("Pepeshan.bmp") as im:
     count = 0
     line = ""
 
-    with open("src/image.s", "w") as image_file:
+    with open(options.pixmap, "w") as image_file:
         (w, h) = im.size
         for v in range(0, h):
             for u in range(0, w):

@@ -1,5 +1,8 @@
 @echo off
 
+REM Make sure we have up-to-date sprite pixmap and color data
+python ..\util\c256img.py -i src\rsrc\sprite.bmp
+
 REM The name portion of the top source file and all generated files
 set SOURCE=bounce
 

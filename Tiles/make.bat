@@ -1,10 +1,10 @@
 @echo off
 
-REM Make sure we have up-to-date pixmap and color data
-python ..\util\c256img.py -i src\rsrc\Pepeshan.bmp
+REM Make sure we have up-to-date tile pixmap and color data
+python ..\util\c256img.py -i src\rsrc\GameTiles.bmp
 
 REM The name portion of the top source file and all generated files
-set SOURCE=imageview
+set SOURCE=tiles
 
 REM The location of 64TASS
 set TASSHOME=d:\64tass

@@ -107,5 +107,5 @@ chk_end         LDA SOURCE              ; Is SOURCE == IMG_END?
 lock            NOP                     ; Otherwise pause
                 BRA lock
 
-.include "palette.s"
-.include "image.s"
+.include "rsrc/colors.s"
+.include "rsrc/pixmap.s"
