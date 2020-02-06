@@ -25,14 +25,14 @@ HRESET          .word START             ; Bootstrapping vector
 ; Global variables
 ;
 
-* = $001000
+* = $002000
 GLOBALS = *
 
 ;
 ; Code to run
 ;
 
-* = $002000
+* = $003000
 
 START           CLC
                 XCE
@@ -57,10 +57,17 @@ START           CLC
                 LDY #<>GRPH_LUT0_PTR
                 MVN `START,`GRPH_LUT0_PTR
 
-                LDA #IMG_END - IMG_START    ; Copy the tile pixmap data to video RAM
+                LDA #$FFFF ;IMG_END - IMG_START    ; Copy the tile pixmap data to video RAM
                 LDX #<>IMG_START
                 LDY #<>PIXMAP
                 MVN `IMG_START,`PIXMAP
+
+;                 setas
+;                 LDX #0
+; pixloop         LDA IMG_START,X
+;                 STA PIXMAP,X
+;                 INX
+;                 BNE pixloop
 
                 setdbr `START
                 setxl

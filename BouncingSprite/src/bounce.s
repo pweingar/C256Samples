@@ -43,7 +43,7 @@ HRESET          .word START             ; Bootstrapping vector
 ; Global variables
 ;
 
-* = $001000
+* = $002000
 GLOBALS = *
 
 NEXTHANDLER     .word 0                 ; Pointer to the next IRQ handler in the chain
@@ -58,7 +58,7 @@ TIMER           .word DEFAULT_TIMER     ; The timer for controlling speed of mot
 ; Code to run
 ;
 
-* = $002000
+* = $003000
 
 START           CLC
                 XCE

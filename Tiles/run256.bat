@@ -1,2 +1,2 @@
 @echo off
-python ..\util\C256Mgr\c256mgr.py --send tiles.hex
+python ..\util\C256Mgr\c256mgr.py --send tiles_works.hex

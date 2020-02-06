@@ -14,13 +14,13 @@ VRAM = $B00000
 
 HRESET          .word START     ; Bootstrapping vector
 
-* = $001000
+* = $002000
 
 SOURCE          .dword ?        ; A pointer to copy from
 SOURCE_END      .dword ?        ; The end of the source block
 DEST            .dword ?        ; A pointer to copy to
 
-* = $002000
+* = $003000
 
 START           CLC
                 XCE
