@@ -1,0 +1,26 @@
+
+; 64tass Turbo Assembler Macro V1.54.1900 listing file
+; 64tass --long-address --flat -b --m65816 --intel-hex -o hello.hex --list=hello.lst --labels=hello.lbl src\hello.s
+; Tue Feb 11 15:53:16 2020
+
+;Offset	;Hex		;Monitor	;Source
+
+;******  Processing input file: src\hello.s
+
+=$00101c				PUTS = $00101C                      ; Print a string to the currently selected channel
+>fffc	00 20				RESET   .word <>START               ; Over-ride the RESET vector with the start of our code
+.2000	18		clc		START   CLC                         ; Make sure we're native mode
+.2001	fb		xce		        XCE
+.2002	e2 20		sep #$20	        SEP #$20                    ; Set M to 1 for 8-bit accumulator
+.2004	c2 10		rep #$10	        REP #$10                    ; Set X to 0 for 16-bit index registers
+.2006	a9 00		lda #$00	        LDA #`GREET                 ; Set the data bank register to be the current bank of the program
+.2008	48		pha		        PHA
+.2009	ab		plb		        PLB
+.200a	a2 14 20	ldx #$2014	        LDX #<>GREET                ; Point to the message in an ASCIIZ string
+.200d	22 1c 10 00	jsl $00101c	        JSL PUTS                    ; And ask the kernel to print it
+.2011	ea		nop		_done   NOP                         ; Infinite loop when we're finished
+.2012	80 fd		bra $2011	        BRA _done
+>2014	48 65 6c 6c 6f 2c 20 77		GREET   .null "Hello, world!", 13   ; The text to display. Will include a terminal NUL
+>201c	6f 72 6c 64 21 0d 00
+
+;******  End of listing

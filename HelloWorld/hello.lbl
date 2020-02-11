@@ -1,0 +1,4 @@
+RESET		= $00fffc
+GREET		= $002014
+PUTS		= $00101c
+START		= $002000
