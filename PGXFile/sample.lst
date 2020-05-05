@@ -1,0 +1,29 @@
+
+; 64tass Turbo Assembler Macro V1.54.1900 listing file
+; 64tass --long-address --flat -b --m65816 -o sample.pgx --list=sample.lst --labels=sample.lbl src\sample.s
+; Sun Apr 12 19:29:37 2020
+
+;Offset	;Hex		;Monitor	;Source
+
+;******  Processing input file: src\sample.s
+
+=$00101c				PUTS = $00101C              ; Print a string to the currently selected channel
+>01fff8	50 47 58			                .text "PGX"
+>01fffb	01				                .byte $01
+>01fffc	00 00 02 00			                .dword START
+.020000	8b		phb		START           PHB
+.020001	08		php		                PHP
+.020002	e2 20		sep #$20	                SEP #$20                ; A is 8-bit
+.020004	c2 10		rep #$10	                REP #$10                ; X, Y are 16-bit
+.020006	a2 14 00	ldx #$0014	                LDX #<>GREETING         ; Point to GREETING
+.020009	a9 02		lda #$02	                LDA #`GREETING
+.02000b	48		pha		                PHA
+.02000c	ab		plb		                PLB
+.02000d	22 1c 10 00	jsl $00101c	                JSL PUTS                ; And print it
+.020011	28		plp		                PLP
+.020012	ab		plb		                PLB
+.020013	6b		rtl		                RTL                     ; Go back to the caller
+>020014	48 65 6c 6c 6f 2c 20 77		GREETING        .null "Hello, world!", 13
+>02001c	6f 72 6c 64 21 0d 00
+
+;******  End of listing

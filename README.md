@@ -21,3 +21,9 @@ Still, these may be useful as examples of how to get various things working on t
 * [PGXFile](PGXFile): Creates a sample PGX executable file. This file can be copied to an SD card and executed
     from the BASIC interpreter using the BRUN command.
 
+## Dependencies
+
+Most of the demos need to convert a BMP file to a graphics format that can be included in the assembly files.
+To do this, I use a Python script that uses the Python Imaging Library (PIL) package.
+I've updated the repo to include the generated files (which are fairly large), but to build the samples from
+scratch, you will need both Python3 and PIL installed.
