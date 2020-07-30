@@ -18,7 +18,7 @@
 
 .cpu "65816"
 
-.include "vicky_def.s"
+.include "vicky_ii_def.s"
 .include "interrupt_def.s"
 .include "macros.s"
 
@@ -28,8 +28,8 @@
 
 VRAM = $B00000                          ; First byte of video RAM
 BORDER_WIDTH = 32                       ; Width of the border in pixels
-X_LEFT = BORDER_WIDTH                   ; Minimum X value for sprites
-X_RIGHT = 640 - BORDER_WIDTH - 32       ; Maximum X value for sprites
+X_LEFT = BORDER_WIDTH + BORDER_WIDTH    ; Minimum X value for sprites
+X_RIGHT = 640 - BORDER_WIDTH            ; Maximum X value for sprites
 Y_TOP = BORDER_WIDTH                    ; Minimum Y value for sprites
 Y_BOTTOM = 480 - BORDER_WIDTH - 32      ; Maximum Y value for sprites
 DEFAULT_TIMER = $02                     ; Number of SOF ticks to wait between sprite updates
@@ -48,8 +48,8 @@ GLOBALS = *
 
 NEXTHANDLER     .word 0                 ; Pointer to the next IRQ handler in the chain
 DESTPTR         .dword 0                ; Pointer used for writing data
-XCOORD          .word 32                ; The X coordinate (column) for the sprite
-YCOORD          .word 32                ; The Y coordinate (row) for the sprite
+XCOORD          .word 100               ; The X coordinate (column) for the sprite
+YCOORD          .word 100               ; The Y coordinate (row) for the sprite
 DX              .word 1                 ; The change in X for an update (either 1/-1)
 DY              .word 1                 ; The change in Y for an update (either 1/-1)
 TIMER           .word DEFAULT_TIMER     ; The timer for controlling speed of motion (decremented on SOF interrupts)
@@ -66,17 +66,15 @@ START           CLC
                 setdbr `START
                 setdp <>GLOBALS
 
-                setas
+                setaxl
                 ; Switch on sprite graphics mode
                 LDA #Mstr_Ctrl_Graph_Mode_En | Mstr_Ctrl_Sprite_En
-                STA @lMASTER_CTRL_REG_L
-
-                setaxl
+                STA @l MASTER_CTRL_REG_L
 
                 LDA #LUT_END - LUT_START    ; Copy the palette to Vicky LUT#1
                 LDX #<>LUT_START
-                LDY #<>GRPH_LUT1_PTR
-                MVN `START,`GRPH_LUT1_PTR
+                LDY #<>GRPH_LUT0_PTR
+                MVN `START,`GRPH_LUT0_PTR
 
                 LDA #IMG_END - IMG_START    ; Copy the sprite pixmap data to video RAM
                 LDX #<>IMG_START
@@ -92,7 +90,7 @@ START           CLC
                 LDA #0
                 STA @lSP00_ADDY_PTR_H
 
-                LDA #%00000001              ; Turn on SPRITE0, layer 0, LUT#0 (1)
+                LDA #%00000001              ; Turn on SPRITE0, layer 0, LUT#0
                 STA @lSP00_CONTROL_REG
 
                 setal
