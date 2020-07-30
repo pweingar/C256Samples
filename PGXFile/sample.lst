@@ -1,13 +1,14 @@
 
 ; 64tass Turbo Assembler Macro V1.54.1900 listing file
 ; 64tass --long-address --flat -b --m65816 -o sample.pgx --list=sample.lst --labels=sample.lbl src\sample.s
-; Sun Apr 12 19:29:37 2020
+; Fri May 29 20:13:08 2020
 
 ;Offset	;Hex		;Monitor	;Source
 
 ;******  Processing input file: src\sample.s
 
 =$00101c				PUTS = $00101C              ; Print a string to the currently selected channel
+=$000360				DOS_RUN_PARAM = $000360     ; 4 bytes - Pointer to the ASCIIZ string for arguments in loading a program
 >01fff8	50 47 58			                .text "PGX"
 >01fffb	01				                .byte $01
 >01fffc	00 00 02 00			                .dword START
@@ -15,15 +16,24 @@
 .020001	08		php		                PHP
 .020002	e2 20		sep #$20	                SEP #$20                ; A is 8-bit
 .020004	c2 10		rep #$10	                REP #$10                ; X, Y are 16-bit
-.020006	a2 14 00	ldx #$0014	                LDX #<>GREETING         ; Point to GREETING
+.020006	a2 28 00	ldx #$0028	                LDX #<>GREETING         ; Point to GREETING
 .020009	a9 02		lda #$02	                LDA #`GREETING
 .02000b	48		pha		                PHA
 .02000c	ab		plb		                PLB
 .02000d	22 1c 10 00	jsl $00101c	                JSL PUTS                ; And print it
-.020011	28		plp		                PLP
-.020012	ab		plb		                PLB
-.020013	6b		rtl		                RTL                     ; Go back to the caller
->020014	48 65 6c 6c 6f 2c 20 77		GREETING        .null "Hello, world!", 13
->02001c	6f 72 6c 64 21 0d 00
+.020011	af 62 03 00	lda $000362	                LDA @l DOS_RUN_PARAM+2  ; Print the parameter list provided by BRUN
+.020015	48		pha		                PHA
+.020016	ab		plb		                PLB
+.020017	c2 20		rep #$20	                REP #$20                ; A is 16-bit
+.020019	af 60 03 00	lda $000360	                LDA @l DOS_RUN_PARAM
+.02001d	aa		tax		                TAX
+.02001e	22 1c 10 00	jsl $00101c	                JSL PUTS
+.020022	a9 34 12	lda #$1234	                LDA #$1234              ; Set a return value of $1234
+.020025	28		plp		                PLP
+.020026	ab		plb		                PLB
+.020027	6b		rtl		                RTL                     ; Go back to the caller
+>020028	48 65 6c 6c 6f 2c 20 77		GREETING        .null "Hello, world!", 13, 13, "Parameters: "
+>020030	6f 72 6c 64 21 0d 0d 50 61 72 61 6d 65 74 65 72
+>020040	73 3a 20 00
 
 ;******  End of listing

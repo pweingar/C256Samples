@@ -16,7 +16,8 @@ Still, these may be useful as examples of how to get various things working on t
     Python script to convert a BMP file to assembly files that are included in an assembly program
     that copies the image and color palette to the graphics system.
 
-* [Tiles](Tiles): Display a simple graphics display using the tile engine on the Vicky chip.
+* [Tiles](Tiles): Display a simple graphics display using the tile engine on the Vicky chip. This also demonstrates
+    scrolling of a tile map.
 
 * [PGXFile](PGXFile): Creates a sample PGX executable file. This file can be copied to an SD card and executed
     from the BASIC interpreter using the BRUN command.

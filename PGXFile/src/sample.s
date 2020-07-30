@@ -6,6 +6,9 @@
 
 PUTS = $00101C              ; Print a string to the currently selected channel
 
+DOS_RUN_PARAM = $000360     ; 4 bytes - Pointer to the ASCIIZ string for arguments in loading a program
+
+
 ; Preamble
 
 * = START - 8
@@ -31,8 +34,19 @@ START           PHB
                 PLB
                 JSL PUTS                ; And print it
 
+                LDA @l DOS_RUN_PARAM+2  ; Print the parameter list provided by BRUN
+                PHA
+                PLB
+                REP #$20                ; A is 16-bit
+                .al
+                LDA @l DOS_RUN_PARAM
+                TAX
+                JSL PUTS
+
+                LDA #$1234              ; Set a return value of $1234
+
                 PLP
                 PLB
                 RTL                     ; Go back to the caller
 
-GREETING        .null "Hello, world!", 13
+GREETING        .null "Hello, world!", 13, 13, "Parameters: "
