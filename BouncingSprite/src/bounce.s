@@ -27,11 +27,12 @@
 ;
 
 VRAM = $B00000                          ; First byte of video RAM
-BORDER_WIDTH = 32                       ; Width of the border in pixels
-X_LEFT = BORDER_WIDTH + BORDER_WIDTH    ; Minimum X value for sprites
-X_RIGHT = 640 - BORDER_WIDTH            ; Maximum X value for sprites
-Y_TOP = BORDER_WIDTH                    ; Minimum Y value for sprites
-Y_BOTTOM = 480 - BORDER_WIDTH - 32      ; Maximum Y value for sprites
+BORDER_WIDTH = 0                        ; Width of the border in pixels
+SPRITE_OFFSET = 32
+X_LEFT = SPRITE_OFFSET                  ; Minimum X value for sprites
+X_RIGHT = 320                           ; Maximum X value for sprites
+Y_TOP = 0                               ; Minimum Y value for sprites
+Y_BOTTOM = 240 - 32                     ; Maximum Y value for sprites
 DEFAULT_TIMER = $02                     ; Number of SOF ticks to wait between sprite updates
 HIRQ = $FFEE                            ; IRQ vector
 
@@ -66,9 +67,14 @@ START           CLC
                 setdbr `START
                 setdp <>GLOBALS
 
+                setas
+                LDA #0
+                STA @l BORDER_CTRL_REG      ; Disable the border
+                STA @l MOUSE_PTR_CTRL_REG_L ; Disable the mouse pointer
+
                 setaxl
                 ; Switch on sprite graphics mode
-                LDA #Mstr_Ctrl_Graph_Mode_En | Mstr_Ctrl_Sprite_En
+                LDA #Mstr_Ctrl_Graph_Mode_En | Mstr_Ctrl_Sprite_En | $0200
                 STA @l MASTER_CTRL_REG_L
 
                 LDA #LUT_END - LUT_START    ; Copy the palette to Vicky LUT#1
