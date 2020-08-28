@@ -34,7 +34,7 @@ if options.input:
                 for u in range(0, w):
                     pixel = im.getpixel((u, v))
                     if count % 65536 == 0:
-                        address = 0x110000 + count
+                        address = 0x100000 + count
                         image_file.write("\n* = ${:x}".format(address))
                         if count == 0:
                             image_file.write("\nIMG_START = *")
