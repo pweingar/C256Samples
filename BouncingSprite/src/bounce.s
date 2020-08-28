@@ -31,8 +31,8 @@ BORDER_WIDTH = 0                        ; Width of the border in pixels
 SPRITE_OFFSET = 32
 X_LEFT = SPRITE_OFFSET                  ; Minimum X value for sprites
 X_RIGHT = 320                           ; Maximum X value for sprites
-Y_TOP = 0                               ; Minimum Y value for sprites
-Y_BOTTOM = 240 - 32                     ; Maximum Y value for sprites
+Y_TOP = 32                              ; Minimum Y value for sprites
+Y_BOTTOM = 240                          ; Maximum Y value for sprites
 DEFAULT_TIMER = $02                     ; Number of SOF ticks to wait between sprite updates
 HIRQ = $FFEE                            ; IRQ vector
 
@@ -73,7 +73,7 @@ START           CLC
                 STA @l MOUSE_PTR_CTRL_REG_L ; Disable the mouse pointer
 
                 setaxl
-                ; Switch on sprite graphics mode
+                ; Switch on sprite graphics mode, 320x200
                 LDA #Mstr_Ctrl_Graph_Mode_En | Mstr_Ctrl_Sprite_En | $0200
                 STA @l MASTER_CTRL_REG_L
 
