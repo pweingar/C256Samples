@@ -117,7 +117,8 @@ CS_COLOR_MEM_PTR        = $AFC000
 BTX_START               = $AFE000     ; BEATRIX Registers
 BTX_END                 = $AFFFFF
 
-;.include "VKYII_CFP9553_BITMAP_def.asm"
+.include "VKYII_CFP9553_BITMAP_def.s"
 .include "VKYII_CFP9553_TILEMAP_def.s"
 .include "VKYII_CFP9553_VDMA_def.s"
+.include "VKYII_CFP9553_SDMA_def.s"
 ;.include "VKYII_CFP9553_SPRITE_def.asm"

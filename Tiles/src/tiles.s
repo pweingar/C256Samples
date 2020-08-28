@@ -68,61 +68,6 @@ lock            NOP                         ; And just sit here waiting
                 BRA lock
 
 ;
-; Start copying data from system RAM to VRAM
-;
-; Inputs (pushed to stack, listed top down)
-;   SOURCE = address of source data (should be system RAM)
-;   DEST = address of destination (should be in video RAM)
-;   SIZE = number of bytes to transfer
-;
-; Outputs:
-;   None
-COPYS2V         .proc
-                PHD
-                PHP
-
-                setdp SOURCE
-
-                ; Set VDMA to go from system to video RAM, 1D copy
-                setas
-                LDA #VDMA_CTRL_SysRAM_Src | VDMA_CTRL_Enable
-                STA @l VDMA_CONTROL_REG
-
-                setal
-                LDA SOURCE                  ; Set the source address
-                STA @l VDMA_SRC_ADDY_L
-
-                LDA DEST                    ; Set the destination address
-                STA @l VDMA_DST_ADDY_L
-
-                LDA SIZE                    ; Set the size
-                STA @l VDMA_SIZE_L
-
-                setas
-                LDA SOURCE+2                ; Set the source address bank
-                STA @l VDMA_SRC_ADDY_L+2
-
-                LDA DEST+2                  ; Set the destination address bank
-                STA @l VDMA_DST_ADDY_L+2
-
-                LDA SIZE+2                  ; Set the size bank
-                STA @l VDMA_SIZE_L+2
-
-                LDA @l VDMA_CONTROL_REG     ; Start the VDMA
-                ORA #VDMA_CTRL_Start_TRF
-                STA @l VDMA_CONTROL_REG
-
-                NOP                         ; VDMA involving system RAM will stop the processor
-                NOP                         ; These NOPs give Vicky time to initiate the transfer and pause the processor
-                NOP                         ; Note: even interrupt handling will be stopped during the DMA
-                NOP
-
-                PLP
-                PLD
-                RTS
-                .pend
-
-;
 ; Initialize the color look up tables
 ;
 INITLUT         .proc
@@ -167,7 +112,13 @@ INITPIXMAP      .proc
                 setas
                 STA @l TILESET0_ADDY_H
 
-                JSR COPYS2V                 ; Request the DMA transfer
+                setaxl
+                PHB                         ; Copy the tile pixmap to VRAM
+                LDX #<>IMG_START
+                LDY #<>PIXMAP
+                LDA #$FFFF
+                MVP #`IMG_START, #`PIXMAP
+                PLB
 
                 ; Enable the tileset, use 256x256 pixel source data layout and LUT0
                 setas
