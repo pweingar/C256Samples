@@ -9,25 +9,45 @@
 .include "macros.s"
 .include "page_00_inc.s"
 
-VRAM = $B00000
+F_HEX = 0                                   ; FILETYPE value for a HEX file to run through the debug port
+F_PGX = 1                                   ; FILETYPE value for a PGX file to run from storage
+VRAM = $B00000                              ; Base address for video RAM
 
+.if FILETYPE = F_HEX
+;
+; For loading through the debug port, bootstrap the code through the RESET vector
+;
 * = $FFFC
-
-HRESET          .word START     ; Bootstrapping vector
+HRESET          .word <>START               ; Bootstrapping vector
+.endif
 
 * = $002000
+GLOBALS = *
+SOURCE          .dword ?                    ; A pointer to copy from
+DEST            .dword ?                    ; A pointer to copy to
+SIZE            .dword ?                    ; The number of bytes to copy
 
-SOURCE          .dword ?        ; A pointer to copy from
-DEST            .dword ?        ; A pointer to copy to
-SIZE            .dword ?        ; The number of bytes to copy
+.if FILETYPE = F_PGX
+;
+; Header for the PGX file
+;
 
+* = START - 8
+                .text "PGX"
+                .byte $01
+                .dword START
+.endif
+
+.if FILETYPE = F_HEX
 * = $003000
-
+.elsif FILETYPE = F_PGX
+* = $010000
+.endif
 START           CLC
                 XCE
 
-                setdp SOURCE
-
+                setdbr 0
+                setdp GLOBALS
                 setaxl
 
                 ; Switch on bitmap graphics mode
@@ -46,10 +66,7 @@ START           CLC
                 STA @l BM0_CONTROL_REG
 
                 ; Set the bitmap's starting address
-                LDA #0
-                STA @l BM0_START_ADDY_L
-                STA @l BM0_START_ADDY_M
-                STA @l BM0_START_ADDY_H
+                MOVEI_L BM0_START_ADDY_L, 0
 
                 LDA #0                      ; Set the bitmap scrolling offset to (0, 0)
                 STA @l BM0_X_OFFSET
@@ -57,20 +74,9 @@ START           CLC
 
                 JSR INITLUT                 ; Initiliaze the LUT
 
-                setal
-                LDA #<>(640*480)            ; Set the size of the data to transfer to VRAM
-                STA SIZE
-                LDA #`(640*480)
-                STA SIZE+2
-
-                LDA #<>IMG_START            ; Set the source to the image data
-                STA SOURCE
-                LDA #`IMG_START
-                STA SOURCE+2
-
-                LDA #0                      ; Set the destination to the beginning of VRAM
-                STA DEST
-                STA DEST+2
+                MOVEI_L SIZE, (640*480)     ; Set the size of the data to transfer to VRAM
+                MOVEI_L SOURCE, IMG_START   ; Set the source to the image data
+                MOVEI_L DEST, 0             ; Set the destination to the beginning of VRAM
 
                 JSR COPYS2V                 ; Request the DMA to copy the image data
 
@@ -91,7 +97,8 @@ COPYS2V         .proc
                 PHD
                 PHP
 
-                setdp SOURCE
+                setdbr 0
+                setdp GLOBALS
                 setas
 
                 ; Set SDMA to go from system to video RAM, 1D copy
@@ -102,27 +109,10 @@ COPYS2V         .proc
                 LDA #VDMA_CTRL_SysRAM_Src | VDMA_CTRL_Enable
                 STA @l VDMA_CONTROL_REG
 
-                setal
-                LDA SOURCE                          ; Set the source address
-                STA @l SDMA_SRC_ADDY_L
-                setas
-                LDA SOURCE+2
-                STA @l SDMA_SRC_ADDY_H
-
-                setal
-                LDA DEST                            ; Set the destination address
-                STA @l VDMA_DST_ADDY_L
-                setas
-                LDA DEST+2
-                STA @l VDMA_DST_ADDY_H
-
-                setal
-                LDA SIZE                            ; Set the size of the block
-                STA @l SDMA_SIZE_L
-                STA @l VDMA_SIZE_L
-                LDA SIZE+2
-                STA @l SDMA_SIZE_H
-                STA @l VDMA_SIZE_H             
+                MOVE_L SDMA_SRC_ADDY_L, SOURCE      ; Set the source address
+                MOVE_L VDMA_DST_ADDY_L, DEST        ; Set the destination address
+                MOVE_L SDMA_SIZE_L, SIZE            ; Set the size of the block
+                MOVE_L VDMA_SIZE_L, SIZE          
 
                 setas
                 LDA @l VDMA_CONTROL_REG             ; Start the VDMA
@@ -161,6 +151,9 @@ vdma_err        BRK
 INITLUT         .proc
                 PHB
                 PHP
+
+                setdbr 0
+                setdp GLOBALS
 
                 setas
                 LDA #0                      ; Make sure default color is 0,0,0
