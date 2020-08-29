@@ -57,3 +57,13 @@ setdbr      .macro
             PLP
             .databank \1
             .endm
+
+MOVEI_L     .macro dest, value
+            setas
+            LDA #<\value
+            STA \dest
+            LDA #>\value
+            STA \dest+1
+            LDA #`\value
+            STA \dest+2
+            .endm

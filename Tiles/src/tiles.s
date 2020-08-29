@@ -20,12 +20,19 @@
 ; Constants
 ;
 
-VRAM = $B00000                          ; First byte of video RAM
-PIXMAP = VRAM                           ; Address of pixmap data in video RAM
-TILEMAP = $B20000                       ; And we'll put the tile map itself right after
+F_HEX = 0                                   ; FILETYPE value for a HEX file to run through the debug port
+F_PGX = 1                                   ; FILETYPE value for a PGX file to run from storage 
+VRAM = $B00000                              ; First byte of video RAM
+PIXMAP = VRAM                               ; Address of pixmap data in video RAM
+TILEMAP = $B20000                           ; And we'll put the tile map itself right after
 
+.if FILETYPE = F_HEX
+;
+; For loading through the debug port, bootstrap the code through the RESET vector
+;
 * = $FFFC
-HRESET          .word START             ; Bootstrapping vector
+HRESET          .word <>START               ; Bootstrapping vector
+.endif
 
 ;
 ; Global variables
@@ -36,11 +43,26 @@ SOURCE          .dword ?                ; Starting address for the source data (
 DEST            .dword ?                ; Starting address for the destination block (4 bytes)
 SIZE            .dword ?                ; Number of bytes to copy (4 bytes)
 
+.if FILETYPE = F_PGX
+;
+; Header for the PGX file
+;
+
+* = START - 8
+                .text "PGX"
+                .byte $01
+                .dword START
+.endif
+
 ;
 ; Code to run
 ;
 
+.if FILETYPE = F_HEX
 * = $003000
+.elsif FILETYPE = F_PGX
+* = $010000
+.endif
 START           CLC
                 XCE
 
@@ -112,13 +134,15 @@ INITPIXMAP      .proc
                 setas
                 STA @l TILESET0_ADDY_H
 
-                setaxl
-                PHB                         ; Copy the tile pixmap to VRAM
-                LDX #<>IMG_START
-                LDY #<>PIXMAP
-                LDA #$FFFF
-                MVP #`IMG_START, #`PIXMAP
-                PLB
+                JSR COPYS2V
+
+                ; setaxl
+                ; PHB                         ; Copy the tile pixmap to VRAM
+                ; LDX #<>IMG_START
+                ; LDY #<>PIXMAP
+                ; LDA #$FFFF
+                ; MVP #`IMG_START, #`PIXMAP
+                ; PLB
 
                 ; Enable the tileset, use 256x256 pixel source data layout and LUT0
                 setas
@@ -190,6 +214,84 @@ set_registers   setal
                 PLP
                 PLB
                 RTS
+                .pend
+
+;
+; Start copying data from system RAM to VRAM
+;
+; Inputs (pushed to stack, listed top down)
+;   SOURCE = address of source data (should be system RAM)
+;   DEST = address of destination (should be in video RAM)
+;   SIZE = number of bytes to transfer
+;
+; Outputs:
+;   None
+COPYS2V         .proc
+                PHD
+                PHP
+
+                setdp SOURCE
+                setas
+
+                ; Set SDMA to go from system to video RAM, 1D copy
+                LDA #SDMA_CTRL0_SysRAM_Src | SDMA_CTRL0_Enable
+                STA @l SDMA_CTRL_REG0
+
+                ; Set VDMA to go from system to video RAM, 1D copy
+                LDA #VDMA_CTRL_SysRAM_Src | VDMA_CTRL_Enable
+                STA @l VDMA_CONTROL_REG
+
+                setal
+                LDA SOURCE                          ; Set the source address
+                STA @l SDMA_SRC_ADDY_L
+                setas
+                LDA SOURCE+2
+                STA @l SDMA_SRC_ADDY_H
+
+                setal
+                LDA DEST                            ; Set the destination address
+                STA @l VDMA_DST_ADDY_L
+                setas
+                LDA DEST+2
+                STA @l VDMA_DST_ADDY_H
+
+                setal
+                LDA SIZE                            ; Set the size of the block
+                STA @l SDMA_SIZE_L
+                STA @l VDMA_SIZE_L
+                LDA SIZE+2
+                STA @l SDMA_SIZE_H
+                STA @l VDMA_SIZE_H             
+
+                setas
+                LDA @l VDMA_CONTROL_REG             ; Start the VDMA
+                ORA #VDMA_CTRL_Start_TRF
+                STA @l VDMA_CONTROL_REG
+
+                LDA @l SDMA_CTRL_REG0               ; Start the SDMA
+                ORA #SDMA_CTRL0_Start_TRF
+                STA @l SDMA_CTRL_REG0
+
+                NOP                                 ; VDMA involving system RAM will stop the processor
+                NOP                                 ; These NOPs give Vicky time to initiate the transfer and pause the processor
+                NOP                                 ; Note: even interrupt handling will be stopped during the DMA
+                NOP
+
+wait_vdma       LDA @l VDMA_STATUS_REG              ; Get the VDMA status
+                BIT #VDMA_STAT_Size_Err | VDMA_STAT_Dst_Add_Err | VDMA_STAT_Src_Add_Err
+                BNE vdma_err                        ; Go to monitor if there is a VDMA error
+                BIT #VDMA_STAT_VDMA_IPS             ; Is it still in process?
+                BNE wait_vdma                       ; Yes: keep waiting
+
+                LDA #0                              ; Make sure DMA registers are cleared
+                STA @l SDMA_CTRL_REG0
+                STA @l VDMA_CONTROL_REG
+
+                PLP
+                PLD
+                RTS
+
+vdma_err        BRK
                 .pend
 
 ;
