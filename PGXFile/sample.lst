@@ -1,7 +1,7 @@
 
 ; 64tass Turbo Assembler Macro V1.54.1900 listing file
 ; 64tass --long-address --flat -b --m65816 -o sample.pgx --list=sample.lst --labels=sample.lbl src\sample.s
-; Fri May 29 20:13:08 2020
+; Tue Oct 20 15:37:03 2020
 
 ;Offset	;Hex		;Monitor	;Source
 
@@ -14,26 +14,31 @@
 >01fffc	00 00 02 00			                .dword START
 .020000	8b		phb		START           PHB
 .020001	08		php		                PHP
-.020002	e2 20		sep #$20	                SEP #$20                ; A is 8-bit
-.020004	c2 10		rep #$10	                REP #$10                ; X, Y are 16-bit
-.020006	a2 28 00	ldx #$0028	                LDX #<>GREETING         ; Point to GREETING
-.020009	a9 02		lda #$02	                LDA #`GREETING
-.02000b	48		pha		                PHA
-.02000c	ab		plb		                PLB
-.02000d	22 1c 10 00	jsl $00101c	                JSL PUTS                ; And print it
-.020011	af 62 03 00	lda $000362	                LDA @l DOS_RUN_PARAM+2  ; Print the parameter list provided by BRUN
+>0001					OLD_P           .byte ?                 ; Old processor status we saved
+>0002					OLD_B           .byte ?                 ; Old DBR we saved
+>0003					RETURN_PC       .long ?                 ; Return address
+>0006					PARAMS          .long ?                 ; Pointer on the stack to the path and parameters string
+.020002	c2 30		rep #$30	                REP #$30                ; A, X, and Y are 16-bit
+.020004	e2 20		sep #$20	                SEP #$20                ; A is 8-bit
+.020006	c2 10		rep #$10	                REP #$10                ;X, and Y are 16-bit
+.020008	a2 26 00	ldx #$0026	                LDX #<>GREETING         ; Point to GREETING
+.02000b	a9 02		lda #$02	                LDA #`GREETING
+.02000d	48		pha		                PHA
+.02000e	ab		plb		                PLB
+.02000f	22 1c 10 00	jsl $00101c	                JSL PUTS                ; And print it
+.020013	a3 08		lda $08,s	                LDA PARAMS+2            ; Set DBR to the bank of the parameters pointer
 .020015	48		pha		                PHA
 .020016	ab		plb		                PLB
 .020017	c2 20		rep #$20	                REP #$20                ; A is 16-bit
-.020019	af 60 03 00	lda $000360	                LDA @l DOS_RUN_PARAM
-.02001d	aa		tax		                TAX
-.02001e	22 1c 10 00	jsl $00101c	                JSL PUTS
-.020022	a9 34 12	lda #$1234	                LDA #$1234              ; Set a return value of $1234
-.020025	28		plp		                PLP
-.020026	ab		plb		                PLB
-.020027	6b		rtl		                RTL                     ; Go back to the caller
->020028	48 65 6c 6c 6f 2c 20 77		GREETING        .null "Hello, world!", 13, 13, "Parameters: "
->020030	6f 72 6c 64 21 0d 0d 50 61 72 61 6d 65 74 65 72
->020040	73 3a 20 00
+.020019	a3 06		lda $06,s	                LDA PARAMS              ; Set X to the 16-bits of the parameters pointer
+.02001b	aa		tax		                TAX
+.02001c	22 1c 10 00	jsl $00101c	                JSL PUTS
+.020020	a9 34 12	lda #$1234	                LDA #$1234              ; Set a return value of $1234
+.020023	28		plp		                PLP
+.020024	ab		plb		                PLB
+.020025	6b		rtl		                RTL                     ; Go back to the caller
+>020026	48 65 6c 6c 6f 2c 20 77		GREETING        .null "Hello, world!", 13, 13, "Parameters: "
+>02002e	6f 72 6c 64 21 0d 0d 50 61 72 61 6d 65 74 65 72
+>02003e	73 3a 20 00
 
 ;******  End of listing

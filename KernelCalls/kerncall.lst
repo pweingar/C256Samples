@@ -1,0 +1,319 @@
+
+; 64tass Turbo Assembler Macro V1.54.1900 listing file
+; 64tass --long-address --flat -b -D FILETYPE=0 --m65816 --intel-hex -o kerncall.hex --list=kerncall.lst --labels=kerncall.lbl src\kerncall.s
+; Tue Sep 01 22:05:16 2020
+
+;Offset	;Hex		;Monitor	;Source
+
+;******  Command line definitions
+
+=0					FILETYPE=0
+
+;******  Processing input file: src\kerncall.s
+
+
+;******  Processing file: src\kernel.s
+
+=$00101c				FK_PUTS             = $00101C ; Print a string to the currently selected channel
+=$001018				FK_PUTC             = $001018 ; Print a character to the currently selected channel
+=$001084				FK_LOCATE           = $001084 ; Reposition the cursor to row Y column X
+=$0010a8				FK_CLRSCREEN        = $0010A8 ; Clear the screen
+=$00112c				FK_SETSIZES         = $00112C ; Set the text screen size variables based on the border and screen resolution.
+=$001068				FK_PRINTS           = $001068 ; Print string to screen. Handles terminal commands
+=$001118				FK_LOAD             = $001118 ; load a binary file into memory, supports multiple file formats
+=$001134				FK_ALLOCFD          = $001134 ; Allocate a file descriptor
+=$001138				FK_FREEFD           = $001138 ; Free a file descriptor
+
+;******  Return to file: src\kerncall.s
+
+
+;******  Processing file: src\macros.s
+
+
+;******  Return to file: src\kerncall.s
+
+
+;******  Processing file: src\page_00_inc.s
+
+=$000000				BANK0_BEGIN      = $000000 ;Start of bank 0 and Direct page
+=$000000				unused_0000      = $000000 ;12 Bytes unused
+=$000008				OPL2_ADDY_PTR_LO = $000008  ; THis Points towards the Instruments Database
+=$000009				OPL2_ADDY_PTR_MD = $000009
+=$00000a				OPL2_ADDY_PTR_HI = $00000A
+=$00000c				SCREENBEGIN      = $00000C ;3 Bytes Start of screen in video RAM. This is the upper-left corrner of the current video page being written to. This may not be what's being displayed by VICKY. Update this if you change VICKY's display page.
+=$00000f				COLS_VISIBLE     = $00000F ;2 Bytes Columns visible per screen line. A virtual line can be longer than displayed, up to COLS_PER_LINE long. Default = 80
+=$000011				COLS_PER_LINE    = $000011 ;2 Bytes Columns in memory per screen line. A virtual line can be this long. Default=128
+=$000013				LINES_VISIBLE    = $000013 ;2 Bytes The number of rows visible on the screen. Default=25
+=$000015				LINES_MAX        = $000015 ;2 Bytes The number of rows in memory for the screen. Default=64
+=$000017				CURSORPOS        = $000017 ;3 Bytes The next character written to the screen will be written in this location.
+=$00001a				CURSORX          = $00001A ;2 Bytes This is where the blinking cursor sits. Do not edit this direectly. Call LOCATE to update the location and handle moving the cursor correctly.
+=$00001c				CURSORY          = $00001C ;2 Bytes This is where the blinking cursor sits. Do not edit this direectly. Call LOCATE to update the location and handle moving the cursor correctly.
+=$00001e				CURCOLOR         = $00001E ;1 Byte Color of next character to be printed to the screen.
+=$00001f				COLORPOS         = $00001F ;3 Byte address of cursor's position in the color matrix
+=$000022				STACKBOT         = $000022 ;2 Bytes Lowest location the stack should be allowed to write to. If SP falls below this value, the runtime should generate STACK OVERFLOW error and abort.
+=$000024				STACKTOP         = $000024 ;2 Bytes Highest location the stack can occupy. If SP goes above this value, the runtime should generate STACK OVERFLOW error and abort.
+=$000026				OPL2_OPERATOR    = $000026 ;
+=$000027				OPL2_CHANNEL     = $000027 ;
+=$000028				OPL2_REG_REGION  = $000028 ; Offset to the Group of Registers
+=$00002a				OPL2_REG_OFFSET  = $00002A ; 2 Bytes (16Bits)
+=$00002c				OPL2_IND_ADDY_LL = $00002C ; 2 Bytes Reserved (Only need 3)
+=$00002e				OPL2_IND_ADDY_HL = $00002E ; 2 Bytes Reserved (Only need 3)
+=$000030				OPL2_NOTE        = $000030 ; 1 Byte
+=$000031				OPL2_OCTAVE      = $000031 ; 1 Byte
+=$000032				OPL2_PARAMETER0  = $000032 ; 1 Byte - Key On/Feedback
+=$000033				OPL2_PARAMETER1  = $000033 ; 1 Byte
+=$000034				OPL2_PARAMETER2  = $000034 ; 1 Byte
+=$000035				OPL2_PARAMETER3  = $000035 ; 1 Byte
+=$000036				OPL2_LOOP        = $000036 ;
+=$000036				OPL2_BLOCK       = $000036
+=$000038				SDCARD_FILE_PTR  = $000038 ; 3 Bytes Pointer to Filename to open
+=$00003c				SDCARD_BYTE_NUM  = $00003C ; 2Bytes
+=$00003f				SDCARD_PRSNT_MNT = $00003F ; 1 Byte, Indicate that the SDCard is Present and that it is Mounted
+=$000040				BM_CLEAR_SCRN_X  = $000040
+=$000042				BM_CLEAR_SCRN_Y  = $000042
+=$000040				RAD_STARTLINE    = $000040 ; 1 Byte
+=$000041				RAD_PATTERN_IDX  = $000041 ; 1 Byte
+=$000042				RAD_LINE         = $000042 ; 1 Byte
+=$000043				RAD_LINENUMBER   = $000043 ; 1 Byte
+=$000044				RAD_CHANNEL_NUM  = $000044 ; 1 Byte
+=$000045				RAD_ISLASTCHAN   = $000045 ; 1 Byte
+=$000046				RAD_Y_POINTER    = $000046 ; 2 Bytes
+=$000048				RAD_TICK         = $000048
+=$00004a				RAD_CHANNEL_DATA = $00004A ; 2 Bytes
+=$00004c				RAD_CHANNE_EFFCT = $00004C
+=$00004d				RAD_TEMP         = $00004D
+=$000050				RAD_ADDR         = $000050 ; 3 bytes to avoid OPL2 errors.
+=$000053				RAD_PATTRN       = $000053 ; 1 bytes - offset to patter
+=$000054				RAD_PTN_DEST     = $000054 ; 3 bytes - where to write the pattern data
+=$000057				RAD_CHANNEL      = $000057 ; 2 bytes - 0 to 8
+=$000059				RAD_LAST_NOTE    = $000059 ; 1 if this is the last note
+=$00005a				RAD_LINE_PTR     = $00005A ; 2 bytes - offset to memory location
+=$000040				BMP_X_SIZE       = $000040 ; 2 Bytes
+=$000042				BMP_Y_SIZE       = $000042 ; 2 Bytes
+=$000044				BMP_PRSE_SRC_PTR = $000044 ; 3 Bytes
+=$000048				BMP_PRSE_DST_PTR = $000048 ; 3 Bytes
+=$00004c				BMP_COLOR_PALET  = $00004C ; 2 Bytes
+=$00004e				SCRN_X_STRIDE    = $00004E ; 2 Bytes, Basically How many Pixel Accross in Bitmap Mode
+=$000050				BMP_FILE_SIZE    = $000050 ; 4 Bytes
+=$000054				BMP_POSITION_X   = $000054 ; 2 Bytes Where, the BMP will be position on the X Axis
+=$000056				BMP_POSITION_Y   = $000056 ; 2 Bytes Where, the BMP will be position on the Y Axis
+=$000058				BMP_PALET_CHOICE = $000058 ;
+=$0000e0				MOUSE_PTR        = $0000E0
+=$0000e1				MOUSE_POS_X_LO   = $0000E1
+=$0000e2				MOUSE_POS_X_HI   = $0000E2
+=$0000e3				MOUSE_POS_Y_LO   = $0000E3
+=$0000e4				MOUSE_POS_Y_HI   = $0000E4
+=$0000f0				USER_TEMP        = $0000F0 ;32 Bytes Temp space for user programs
+=$000100				GAVIN_BLOCK      = $000100 ;256 Bytes Gavin reserved, overlaps debugging registers at $1F0
+=$000100				MULTIPLIER_0     = $000100 ;0 Byte  Unsigned multiplier
+=$000100				M0_OPERAND_A     = $000100 ;2 Bytes Operand A (ie: A x B)
+=$000102				M0_OPERAND_B     = $000102 ;2 Bytes Operand B (ie: A x B)
+=$000104				M0_RESULT        = $000104 ;4 Bytes Result of A x B
+=$000108				MULTIPLIER_1     = $000108 ;0 Byte  Signed Multiplier
+=$000108				M1_OPERAND_A     = $000108 ;2 Bytes Operand A (ie: A x B)
+=$00010a				M1_OPERAND_B     = $00010A ;2 Bytes Operand B (ie: A x B)
+=$00010c				M1_RESULT        = $00010C ;4 Bytes Result of A x B
+=$000108				DIVIDER_0        = $000108 ;0 Byte  Unsigned divider
+=$000108				D0_OPERAND_A     = $000108 ;2 Bytes Divider 0 Dividend ex: A in  A/B
+=$00010a				D0_OPERAND_B     = $00010A ;2 Bytes Divider 0 Divisor ex B in A/B
+=$00010c				D0_RESULT        = $00010C ;2 Bytes Quotient result of A/B ex: 7/2 = 3 r 1
+=$00010e				D0_REMAINDER     = $00010E ;2 Bytes Remainder of A/B ex: 1 in 7/2=3 r 1
+=$000110				DIVIDER_1        = $000110 ;0 Byte  Signed divider
+=$000110				D1_OPERAND_A     = $000110 ;2 Bytes Divider 1 Dividend ex: A in  A/B
+=$000112				D1_OPERAND_B     = $000112 ;2 Bytes Divider 1 Divisor ex B in A/B
+=$000114				D1_RESULT        = $000114 ;2 Bytes Signed quotient result of A/B ex: 7/2 = 3 r 1
+=$000116				D1_REMAINDER     = $000116 ;2 Bytes Signed remainder of A/B ex: 1 in 7/2=3 r 1
+=$000120				ADDER_SIGNED_32  = $000120 ; The 32 Bit Adders takes 12Byte that are NOT RAM Location
+=$000140				INT_CONTROLLER   = $000140 ; $000140...$00015F Interrupt Controller
+=$000160				TIMER_CONTROLLER = $000160 ; $000160...$00017F Timer0/Timer1/Timer2 Block
+=$000160				TIMER_CTRL_REGLL = $000160 ;
+=$000161				TIMER_CTRL_REGLH = $000161 ;
+=$000162				TIMER_CTRL_REGHL = $000162 ;
+=$000163				TIMER_CTRL_REGHH = $000163 ;
+=$000240				CPU_REGISTERS    = $000240 ; Byte
+=$000240				CPUPC            = $000240 ;2 Bytes Program Counter (PC)
+=$000242				CPUPBR           = $000242 ;2 Bytes Program Bank Register (K)
+=$000244				CPUA             = $000244 ;2 Bytes Accumulator (A)
+=$000246				CPUX             = $000246 ;2 Bytes X Register (X)
+=$000248				CPUY             = $000248 ;2 Bytes Y Register (Y)
+=$00024a				CPUSTACK         = $00024A ;2 Bytes Stack Pointer (S)
+=$00024c				CPUDP            = $00024C ;2 Bytes Direct Page Register (D)
+=$00024e				CPUDBR           = $00024E ;1 Byte  Data Bank Register (B)
+=$00024f				CPUFLAGS         = $00024F ;1 Byte  Flags (P)
+=$000300				LOADFILE_VARS    = $000300 ; Byte
+=$000300				LOADFILE_NAME    = $000300 ;3 Bytes (addr) Name of file to load. Address in Data Page
+=$000303				LOADFILE_LEN     = $000303 ;1 Byte  Length of filename. 0=Null Terminated
+=$000304				LOADPBR          = $000304 ;1 Byte  First Program Bank of loaded file ($05 segment)
+=$000305				LOADPC           = $000305 ;2 Bytes Start address of loaded file ($05 segment)
+=$000307				LOADDBR          = $000307 ;1 Byte  First data bank of loaded file ($06 segment)
+=$000308				LOADADDR         = $000308 ;2 Bytes FIrst data address of loaded file ($06 segment)
+=$00030a				LOADFILE_TYPE    = $00030A ;3 Bytes (addr) File type string in loaded data file. Actual string data will be in Bank 1. Valid values are BIN, PRG, P16
+=$00030d				BLOCK_LEN        = $00030D ;2 Bytes Length of block being loaded
+=$00030f				BLOCK_ADDR       = $00030F ;2 Bytes (temp) Address of block being loaded
+=$000311				BLOCK_BANK       = $000311 ;1 Byte  (temp) Bank of block being loaded
+=$000312				BLOCK_COUNT      = $000312 ;2 Bytes (temp) Counter of bytes read as file is loaded
+=$000300				FDC_DRIVE        = $000300 ;1 byte - The number of the selected drive
+=$000301				FDC_HEAD         = $000301 ;1 byte - The head number (0 or 1)
+=$000302				FDC_CYLINDER     = $000302 ;1 byte - The cylinder number
+=$000303				FDC_SECTOR       = $000303 ;1 byte - The sector number
+=$000304				FDC_SECTOR_SIZE  = $000304 ;1 byte - The sector size code (2 = 512)
+=$000305				FDC_SECPERTRK    = $000305 ;1 byte - The number of sectors per track (18 for 1.44 MB floppy)
+=$000306				FDC_ST0          = $000306 ;1 byte - Status Register 0
+=$000307				FDC_ST1          = $000307 ;1 byte - Status Register 1
+=$000308				FDC_ST2          = $000308 ;1 byte - Status Register 2
+=$000309				FDC_ST3          = $000309 ;1 byte - Status Register 3
+=$00030a				FDC_PCN          = $00030A ;1 byte - Present Cylinder Number
+=$00030b				FDC_STATUS       = $00030B ;1 byte - Status of what we think is going on with the FDC:
+=$00030c				DIVIDEND         = $00030C ;4 bytes - Dividend for 32-bit division
+=$000310				DIVISOR          = $000310 ;4 bytes - Divisor for 32-bit division
+=$000314				REMAINDER        = $000314 ;4 bytes - Remainder for 32-bit division
+=$000320				SDOS_VARIABLES   = $000320
+=$000320				BIOS_STATUS      = $000320      ; 1 byte - Status of any BIOS operation
+=$000321				BIOS_DEV         = $000321      ; 1 byte - Block device number for block operations
+=$000322				BIOS_LBA         = $000322      ; 4 bytes - Address of block to read/write (this is the physical block, w/o reference to partition)
+=$000326				BIOS_BUFF_PTR    = $000326      ; 4 bytes - 24-bit pointer to memory for read/write operations
+=$00032a				BIOS_FIFO_COUNT  = $00032A      ; 2 bytes - The number of bytes read on the last block read
+=$00032e				DOS_STATUS       = $00032E      ; 1 byte - The error code describing any error with file access
+=$000330				DOS_CLUS_ID      = $000330      ; 4 bytes - The cluster desired for a DOS operation
+=$000338				DOS_DIR_PTR      = $000338      ; 4 bytes - Pointer to a directory entry (assumed to be within DOS_SECTOR)
+=$00033c				DOS_BUFF_PTR     = $00033C      ; 4 bytes - A pointer for DOS cluster read/write operations
+=$000340				DOS_FD_PTR       = $000340      ; 4 bytes - A pointer to a file descriptor
+=$000344				DOS_FAT_LBA      = $000344      ; 4 bytes - The LBA for a sector of the FAT we need to read/write
+=$000348				DOS_TEMP         = $000348      ; 4 bytes - Temporary storage for DOS operations
+=$00034c				DOS_FILE_SIZE    = $00034C      ; 4 bytes - The size of a file
+=$000350				DOS_SRC_PTR      = $000350      ; 4 bytes - Pointer for transferring data
+=$000354				DOS_DST_PTR      = $000354      ; 4 bytes - Pointer for transferring data
+=$000358				DOS_END_PTR      = $000358      ; 4 bytes - Pointer to the last byte to save
+=$00035c				DOS_RUN_PTR      = $00035C      ; 4 bytes - Pointer for starting a loaded program
+=$000360				DOS_RUN_PARAM    = $000360      ; 4 bytes - Pointer to the ASCIIZ string for arguments in loading a program
+=$000364				DOS_STR1_PTR     = $000364      ; 4 bytes - pointer to a string
+=$000368				DOS_STR2_PTR     = $000368      ; 4 bytes - pointer to a string
+=$00036b				DOS_SCRATCH      = $00036B      ; 4 bytes - general purpose short term storage
+=$000400				DOS_PATH_BUFF    = $000400      ; 256 bytes - A buffer for path names
+=$000500				FDC_PARAMETERS   = $000500      ; 16 bytes - a buffer of parameter data for the FDC
+=$000510				FDC_RESULTS      = $000510      ; 16 bytes - Buffer for results of FDC commands
+=$000530				FDC_PARAM_NUM    = $000530      ; 1 byte - The number of parameters to send to the FDC (including command)
+=$000532				FDC_RESULT_NUM   = $000532      ; 1 byte - The number of results expected
+=$000533				FDC_EXPECT_DAT   = $000533      ; 1 byte - 0 = the command expects no data, otherwise expects data
+=$000534				FDC_CMD_RETRY    = $000534      ; 1 byte - a retry counter for commands
+=$000700				CURRUART         = $000700 ; 3-bytes: the base address of the current UART
+=$000703				CHAN_OUT         = $000703 ; 1-byte: the number of the current output channel (for PUTC, etc.)
+=$000704				CHAN_IN          = $000704 ; 1-byte: the number of the current input channel (for GETCH, etc.)
+=$000705				TIMERFLAGS       = $000705 ; 1-byte: flags to indicate that one of the timer interupts has triggered
+=$80					TIMER0TRIGGER    = $80
+=$40					TIMER1TRIGGER    = $40
+=$20					TIMER2TRIGGER    = $20
+=$000f00				KEY_BUFFER       = $000F00 ; 64 Bytes keyboard buffer
+=$0080					KEY_BUFFER_SIZE  = $0080   ;128 Bytes (constant) keyboard buffer length
+=$000f7f				KEY_BUFFER_END   = $000F7F ;  1 Byte  Last byte of keyboard buffer
+=$000f83				KEY_BUFFER_CMD   = $000F83 ;  1 Byte  Indicates the Command Process Status
+=$000f84				COMMAND_SIZE_STR = $000F84 ;  1 Byte
+=$000f86				COMMAND_COMP_TMP = $000F86 ;  2 Bytes
+=$000f87				KEYBOARD_SC_FLG  = $000F87 ;  1 Bytes that indicate the Status of Left Shift, Left CTRL, Left ALT, Right Shift
+=$000f88				KEYBOARD_SC_TMP  = $000F88 ;  1 Byte, Interrupt Save Scan Code while Processing
+=$000f89				KEYBOARD_LOCKS   = $000F89 ;  1 Byte, the status of the various lock keys
+=$000f8a				KEYFLAG          = $000F8A ;  1 Byte, flag to indicate if CTRL-C has been pressed
+=$000f8b				KEY_BUFFER_RPOS  = $000F8B ;  2 Byte, position of the character to read from the KEY_BUFFER
+=$000f8d				KEY_BUFFER_WPOS  = $000F8D ;  2 Byte, position of the character to write to the KEY_BUFFER
+=$001000				KERNEL_JMP_BEGIN = $001000 ; Reserved for the Kernel jump table
+=$001fff				KERNEL_JMP_END   = $001FFF
+=$002000				TEST_BEGIN       = $002000 ;28672 Bytes Test/diagnostic code for prototype.
+=$007fff				TEST_END         = $007FFF ;0 Byte
+=$008000				STACK_BEGIN      = $008000 ;32512 Bytes The default beginning of stack space
+=$00feff				STACK_END        = $00FEFF ;0 Byte  End of stack space. Everything below this is I/O space
+=$00ffff				BANK0_END        = $00FFFF ;End of Bank 00 and Direct page
+
+;******  Return to file: src\kerncall.s
+
+.0000					FILEDESC
+>0000					STATUS              .byte ?             ; The status flags of the file descriptor (open, closed, error, EOF, etc.)
+>0001					DEV                 .byte ?             ; The ID of the device holding the file
+>0002					PATH                .dword ?            ; Pointer to a NULL terminated path string
+>0006					CLUSTER             .dword ?            ; The current cluster of the file.
+>000a					FIRST_CLUSTER       .dword ?            ; The ID of the first cluster in the file
+>000e					BUFFER              .dword ?            ; Pointer to a cluster-sized buffer
+>0012					SIZE                .dword ?            ; The size of the file
+>0016					CREATE_DATE         .word ?             ; The creation date of the file
+>0018					CREATE_TIME         .word ?             ; The creation time of the file
+>001a					MODIFIED_DATE       .word ?             ; The modification date of the file
+>001c					MODIFIED_TIME       .word ?             ; The modification time of the file
+>001e					RESERVED            .word ?             ; Two reserved bytes to bring the descriptor up to 32 bytes
+=$010000				LOAD_ADDR = $010000                         ; Address to store our data
+>fffc	00 30				HRESET          .word <>START               ; Bootstrapping vector
+.3000	18		clc		START           CLC
+.3001	fb		xce		                XCE
+.3002	08		php		            PHP
+.3003	e2 20		sep #$20	            SEP #$20
+.3005	48		pha		            PHA
+.3006	a9 00		lda #$00	            LDA #0
+.3008	48		pha		            PHA
+.3009	ab		plb		            PLB
+.300a	68		pla		            PLA
+.300b	28		plp		            PLP
+.300c	08		php		            PHP
+.300d	c2 20		rep #$20	            REP #$20
+.300f	48		pha		            PHA
+.3010	a9 20 03	lda #$0320	            LDA #SDOS_VARIABLES
+.3013	5b		tcd		            TCD
+.3014	68		pla		            PLA
+.3015	28		plp		            PLP
+.3016	e2 20		sep #$20	            SEP #$20
+.3018	c2 10		rep #$10	            REP #$10
+.301a	a9 00		lda #$00	                LDA #0
+.301c	a2 00 00	ldx #$0000	                LDX #0
+.301f	9d d1 30	sta $30d1,x	clr_loop        STA MY_FD,X
+.3022	e8		inx		                INX
+.3023	e0 20 00	cpx #$0020	                CPX #SIZE(FILEDESC)
+.3026	d0 f7		bne $301f	                BNE clr_loop
+.3028	c2 30		rep #$30	            REP #$30
+.302a	a9 6d 30	lda #$306d	                LDA #<>PATH                 ; Set the pointer to the path
+.302d	8d d3 30	sta $30d3	                STA MY_FD.PATH
+.3030	a9 00 00	lda #$0000	                LDA #`PATH
+.3033	8d d5 30	sta $30d5	                STA MY_FD.PATH+2
+.3036	a9 00 32	lda #$3200	                LDA #<>MY_BUFFER            ; Set the pointer to the sector buffer
+.3039	8d df 30	sta $30df	                STA MY_FD.BUFFER
+.303c	a9 00 00	lda #$0000	                LDA #`MY_BUFFER
+.303f	8d e1 30	sta $30e1	                STA MY_FD.BUFFER+2
+.3042	a9 d1 30	lda #$30d1	                LDA #<>MY_FD                ; Set the file descriptor pointer to our file descriptor
+.3045	85 20		sta $0340	                STA DOS_FD_PTR
+.3047	a9 00 00	lda #$0000	                LDA #`MY_FD
+.304a	85 22		sta $0342	                STA DOS_FD_PTR+2
+.304c	a9 00 00	lda #$0000	                LDA #<>LOAD_ADDR            ; Set the load address for the file
+.304f	85 34		sta $0354	                STA DOS_DST_PTR             ; If loading a PGX, set address to $FFFFFFFF
+.3051	a9 01 00	lda #$0001	                LDA #`LOAD_ADDR
+.3054	85 36		sta $0356	                STA DOS_DST_PTR+2
+.3056	22 18 11 00	jsl $001118	                JSL FK_LOAD                 ; Attempt to load the file
+.305a	90 09		bcc $3065	                BCC not_loaded
+.305c	00		brk #		                BRK
+.305d	a2 7b 30	ldx #$307b	no_fd_found     LDX #<>MSG_NO_FD
+.3060	22 1c 10 00	jsl $00101c	                JSL FK_PUTS
+.3064	00		brk #		                BRK
+.3065	a2 9e 30	ldx #$309e	not_loaded      LDX #<>MSG_NO_LOAD
+.3068	22 1c 10 00	jsl $00101c	                JSL FK_PUTS
+.306c	00		brk #		                BRK
+>306d	40 73 3a 73 61 6d 70 6c		PATH            .null "@s:sample.txt"       ; Path to the file to load
+>3075	65 2e 74 78 74 00
+>307b	4b 65 72 6e 65 6c 20 69		MSG_NO_FD       .null "Kernel is out of file descriptors."
+>3083	73 20 6f 75 74 20 6f 66 20 66 69 6c 65 20 64 65
+>3093	73 63 72 69 70 74 6f 72 73 2e 00
+>309e	46 5f 4c 4f 41 44 20 66		MSG_NO_LOAD     .null "F_LOAD failed... check DOS_STATUS and BIOS_STATUS."
+>30a6	61 69 6c 65 64 2e 2e 2e 20 63 68 65 63 6b 20 44
+>30b6	4f 53 5f 53 54 41 54 55 53 20 61 6e 64 20 42 49
+>30c6	4f 53 5f 53 54 41 54 55 53 2e 00
+.30d1					MY_FD
+>30d1					STATUS              .byte ?             ; The status flags of the file descriptor (open, closed, error, EOF, etc.)
+>30d2					DEV                 .byte ?             ; The ID of the device holding the file
+>30d3					PATH                .dword ?            ; Pointer to a NULL terminated path string
+>30d7					CLUSTER             .dword ?            ; The current cluster of the file.
+>30db					FIRST_CLUSTER       .dword ?            ; The ID of the first cluster in the file
+>30df					BUFFER              .dword ?            ; Pointer to a cluster-sized buffer
+>30e3					SIZE                .dword ?            ; The size of the file
+>30e7					CREATE_DATE         .word ?             ; The creation date of the file
+>30e9					CREATE_TIME         .word ?             ; The creation time of the file
+>30eb					MODIFIED_DATE       .word ?             ; The modification date of the file
+>30ed					MODIFIED_TIME       .word ?             ; The modification time of the file
+>30ef					RESERVED            .word ?             ; Two reserved bytes to bring the descriptor up to 32 bytes
+>30f1					                .align 512
+>3200					MY_BUFFER       .fill 512
+
+;******  End of listing

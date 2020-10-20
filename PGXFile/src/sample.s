@@ -23,9 +23,22 @@ DOS_RUN_PARAM = $000360     ; 4 bytes - Pointer to the ASCIIZ string for argumen
 
 START           PHB
                 PHP
+
+                .virtual 1,S
+OLD_P           .byte ?                 ; Old processor status we saved
+OLD_B           .byte ?                 ; Old DBR we saved
+RETURN_PC       .long ?                 ; Return address
+PARAMS          .long ?                 ; Pointer on the stack to the path and parameters string
+                .endv
+
+
+                REP #$30                ; A, X, and Y are 16-bit
+                .al
+                .xl
+
                 SEP #$20                ; A is 8-bit
-                REP #$10                ; X, Y are 16-bit
                 .as
+                REP #$10                ;X, and Y are 16-bit
                 .xl
 
                 LDX #<>GREETING         ; Point to GREETING
@@ -34,12 +47,12 @@ START           PHB
                 PLB
                 JSL PUTS                ; And print it
 
-                LDA @l DOS_RUN_PARAM+2  ; Print the parameter list provided by BRUN
+                LDA PARAMS+2            ; Set DBR to the bank of the parameters pointer
                 PHA
                 PLB
                 REP #$20                ; A is 16-bit
                 .al
-                LDA @l DOS_RUN_PARAM
+                LDA PARAMS              ; Set X to the 16-bits of the parameters pointer
                 TAX
                 JSL PUTS
 
