@@ -23,6 +23,8 @@ Still, these may be useful as examples of how to get various things working on t
 * [PGXFile](PGXFile): Creates a sample PGX executable file. This file can be copied to an SD card and executed
     from the BASIC interpreter using the BRUN command.
 
+* [VDMA](VDMA): Demonstrates 1D and 2D fill operations using Vicky's VDMA capability.
+
 ## Dependencies
 
 Most of the demos need to convert a BMP file to a graphics format that can be included in the assembly files.
